@@ -55,3 +55,16 @@ Bu klasördeki `Dockerfile`, React arayüzünü derleyip Node sunucusuyla aynı 
 Ürün ve model görselleri yüklendikten sonra **5 SN E-TİCARET VİDEOSU DA OLUŞTUR** seçeneğini işaretleyin. Ana üretim butonu bu durumda önce 2:3 e-ticaret görselini üretir, ardından aynı sonuç görselini Veo 3.1'e başlangıç karesi olarak gönderir. Veo 9:16 formatında 6 saniye üretir; sunucu FFmpeg ile çıktıyı otomatik olarak tam 5.000 saniyelik MP4'e dönüştürür. Görsel ve video sonuç panelinde birlikte sunulur.
 
 Video seçeneği işaretlenmezse yalnızca görsel üretilir; daha sonra sonuç panelindeki video butonuyla video ayrıca üretilebilir.
+
+## Yeni: Katalog, Ürün Açıklaması (SEO), Beden Tablosu ve Ticimax'a Gönderme
+
+Üst menüde dört sekme bulunur:
+
+- **STÜDYO** — tekli görsel/video üretimi (önceki sürümle aynı).
+- **KATALOG** — Stüdyo'daki model/ürün görsellerini kullanarak birden fazla pozu tek seferde üretir; üretilen görsellerden istediklerinizi seçip **Ticimax Ürün Kart ID** ile Ticimax'a gönderebilirsiniz.
+- **ÜRÜN AÇIKLAMASI** — yüklenen ürün görselinden AI ile SEO başlık/açıklama/meta etiketleri üretir ve aynı Ticimax Ürün Kart ID ile gönderir (açıklama → ön yazı, meta bilgiler → SEO alanları; ürün adı değiştirilmez).
+- **BEDEN TABLOSU** — ölçü tablosu oluşturur, HTML/PNG/JPG olarak dışa aktarır ve aynı Ürün Kart ID ile ürün açıklamasına (mevcut açıklama silinmeden) ekler.
+
+Gemini API çağrıları (görsel ve SEO metni) her zaman `server/index.js` üzerinden, `GEMINI_API_KEY` ortam değişkeniyle yapılır — tarayıcı hiçbir zaman API anahtarı istemez veya görmez. Yeni bir kurulum/anahtar adımına gerek yoktur; Railway'deki mevcut `GEMINI_API_KEY` değişkeni yeterlidir.
+
+Ticimax'a gönderme işlemleri (görsel, SEO, beden tablosu) n8n webhook'ları üzerinden çalışır. Varsayılan adresler kodun içinde tanımlıdır; farklı bir n8n adresi kullanmak isterseniz **KATALOG** sekmesindeki "Webhook Ayarları" bölümünden değiştirebilirsiniz (tarayıcıda saklanır, tekrar girmeniz gerekmez).
