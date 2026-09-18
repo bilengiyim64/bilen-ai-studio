@@ -51,6 +51,34 @@ function pushImage(input, dataUrl, label) {
 
 app.get('/api/health', (_, res) => res.json({ ok: true }));
 
+// Genel amaçlı Gemini generateContent proxy'si (SEO metni ve katalog görselleri için).
+// Anahtar burada, sunucu tarafında kalır; istemci hiçbir zaman anahtar görmez/girmez.
+// Google'ın döndürdüğü HTTP durum kodu ve gövde aynen istemciye iletilir.
+app.post('/api/gemini', async (req, res) => {
+  if (!API_KEY) {
+    res.status(500).json({ error: { message: 'GEMINI_API_KEY tanımlı değil. Railway/sunucu ortam değişkenlerini kontrol edin.' } });
+    return;
+  }
+  const model = String(req.query.model || '').trim();
+  if (!model) {
+    res.status(400).json({ error: { message: 'model query parametresi gerekli.' } });
+    return;
+  }
+  try {
+    const r = await fetch(`${BASE}/models/${encodeURIComponent(model)}:generateContent`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-goog-api-key': API_KEY },
+      body: JSON.stringify(req.body)
+    });
+    const text = await r.text();
+    res.status(r.status);
+    res.type('application/json');
+    res.send(text);
+  } catch (e) {
+    res.status(500).json({ error: { message: e.message } });
+  }
+});
+
 app.post('/api/studio-image', async (req, res) => {
   try {
     if (!requireKey(res)) return;
